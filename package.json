@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "bun run ./src/index.ts"
   },
   "dependencies": {
     "@types/puppeteer": "^7.0.4",

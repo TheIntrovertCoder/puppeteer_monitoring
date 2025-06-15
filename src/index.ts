@@ -1,43 +1,52 @@
 // noinspection SpellCheckingInspection
 
-import puppeter from "puppeteer"
-import excel from "exceljs"
+import puppeteer from "puppeteer";
+import excel from "exceljs";
 import { elementsToMonitor } from "./elementsToMonitor";
 import { GetWebSocketDebugger } from "./helperFunction";
 import { Stocks } from "./stocksToMonitor";
 
-Stocks.forEach(stock => MonitorStock(stock))
+Stocks.forEach(stock => MonitorStock(stock));
 
-async function MonitorStock(stock: any) {
+async function MonitorStock(stock: string) {
     try {
-        // taken from http://localhost:9222/json/version unique for each session
-        const browser = await puppeter.connect({
+        const browser = await puppeteer.connect({
             browserWSEndpoint: await GetWebSocketDebugger()
-        })
+        });
 
         const page = await browser.newPage();
-        await page.goto(`https://groww.in/stocks/${stock}`, { waitUntil: "load" })
+        await page.goto(`https://groww.in/stocks/${stock}`, { waitUntil: "load" }).catch( error => console.error(`Page error: ${error}}`))
 
-        await page.exposeFunction("onValueChanged", (id: string, value: Node) => {
-            value != null && console.info(`${id} value changed: ${value}`)
-        })
+        const requiredFields = elementsToMonitor.map(e => e.id);
+
+        const stockData: Record<string, any> = {};
+
+        await page.exposeFunction("onValueChanged", (id: string, value: any) => {
+            if (value == null || String(value) === "0.00") return;
+
+            stockData[id] = value;
+
+            const hasAllFields = requiredFields.every(field => stockData[field] !== undefined);
+
+            if (hasAllFields) {
+                console.log(JSON.stringify(stockData));
+            }
+        });
 
         for (const { selector } of elementsToMonitor) {
-            await page.waitForSelector(selector, { timeout: 800 }).catch(error => console.info(`${error}`))
+            await page.waitForSelector(selector, { timeout: 800 }).catch(error => {});
         }
 
+        // Start monitoring the elements for changes
         await page.evaluate((elements) => {
             elements.forEach(({ id, selector }) => {
                 const el = document.querySelector(selector);
-                if (!el) {
-                    // @ts-ignore
-                    window.onValueChanged(id, null);
-                    return;
-                }
-                let lastValue = el.textContent;
                 // @ts-ignore
-                window.onValueChanged(id, lastValue);
+                window.onValueChanged(id, el ? el.textContent : null);
 
+                if (!el) return;
+
+                let lastValue = el.textContent;
                 const observer = new MutationObserver(() => {
                     if (el.textContent !== lastValue) {
                         lastValue = el.textContent;
@@ -51,8 +60,6 @@ async function MonitorStock(stock: any) {
         }, elementsToMonitor);
 
     } catch (error) {
-        console.error(`Something went wrong - ${error}`)
+        console.error(`Something went wrong - ${error}`);
     }
-
-
-};
+}
