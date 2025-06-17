@@ -25,7 +25,7 @@ async function MonitorStock(stock: string) {
             if (value == null || String(value) === "0.00") return;
 
             stockData[id] = value;
-            stockDate[timestamp] = formatDateUTC(new Date())
+            stockData["timestamp"] = formatDateUTC(new Date())
 
             const hasAllFields = requiredFields.every(field => stockData[field] !== undefined);
 

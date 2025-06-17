@@ -8,7 +8,7 @@ export function GetWebSocketDebugger() {
     }
 }
 
-export function formatDateUTC(date) {
+export function formatDateUTC(date: Date) {
   const day = String(date.getUTCDate()).padStart(2, '0');
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
