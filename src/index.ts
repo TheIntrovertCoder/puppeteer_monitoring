@@ -3,7 +3,7 @@
 import puppeteer from "puppeteer";
 import excel from "exceljs";
 import { elementsToMonitor } from "./elementsToMonitor";
-import { GetWebSocketDebugger } from "./helperFunction";
+import { formatDateUTC, GetWebSocketDebugger } from "./helperFunction";
 import { Stocks } from "./stocksToMonitor";
 
 Stocks.forEach(stock => MonitorStock(stock));
@@ -25,6 +25,7 @@ async function MonitorStock(stock: string) {
             if (value == null || String(value) === "0.00") return;
 
             stockData[id] = value;
+            stockDate[timestamp] = formatDateUTC(new Date())
 
             const hasAllFields = requiredFields.every(field => stockData[field] !== undefined);
 
