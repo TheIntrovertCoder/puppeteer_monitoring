@@ -1,9 +1,8 @@
 // noinspection SpellCheckingInspection
 
 import puppeteer from "puppeteer";
-import excel from "exceljs";
 import { elementsToMonitor } from "./elementsToMonitor";
-import { formatDateUTC, GetWebSocketDebugger } from "./helperFunction";
+import { formatDate, GetWebSocketDebugger } from "./helperFunction";
 import { Stocks } from "./stocksToMonitor";
 
 Stocks.forEach(stock => MonitorStock(stock));
@@ -15,27 +14,36 @@ async function MonitorStock(stock: string) {
         });
 
         const page = await browser.newPage();
-        await page.goto(`https://groww.in/stocks/${stock}`, { waitUntil: "load" }).catch( error => console.error(`Page error: ${error}}`))
+        await page.goto(`https://groww.in/stocks/${stock}`, { waitUntil: "load" }).catch(error => console.error(`Page error: ${error}}`))
 
         const requiredFields = elementsToMonitor.map(e => e.id);
 
         const stockData: Record<string, any> = {};
 
-        await page.exposeFunction("onValueChanged", (id: string, value: any) => {
+        await page.exposeFunction("onValueChanged", (id: string, value: string) => {
             if (value == null || String(value) === "0.00") return;
 
             stockData[id] = value;
-            stockData["timestamp"] = formatDateUTC(new Date())
+            stockData["timestamp"] = formatDate(new Date())
 
             const hasAllFields = requiredFields.every(field => stockData[field] !== undefined);
 
             if (hasAllFields) {
-                console.log(JSON.stringify(stockData));
+                const fieldsOrder = [
+                    "Name",
+                    "Price",
+                    "currentPosition",
+                    "lowestToday",
+                    "highestToday",
+                    "volume",
+                    "timestamp"
+                ];
+                console.log(fieldsOrder.map(key => stockData[key] ?? "").join("|"));
             }
         });
 
         for (const { selector } of elementsToMonitor) {
-            await page.waitForSelector(selector, { timeout: 800 }).catch(error => {});
+            await page.waitForSelector(selector, { timeout: 800 }).catch(error => { });
         }
 
         // Start monitoring the elements for changes

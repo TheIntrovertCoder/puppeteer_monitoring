@@ -1,1 +1,1 @@
-bun run dev > ouput.txt 2>&1
+bun run .\src\index.ts > output.txt
