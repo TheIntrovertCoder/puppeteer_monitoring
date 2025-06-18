@@ -1,5 +1,3 @@
-// noinspection SpellCheckingInspection
-
 import puppeteer from "puppeteer";
 import { elementsToMonitor } from "./elementsToMonitor";
 import { formatDate, GetWebSocketDebugger } from "./helperFunction";
@@ -14,39 +12,47 @@ async function MonitorStock(stock: string) {
         });
 
         const page = await browser.newPage();
-        await page.goto(`https://groww.in/stocks/${stock}`, { waitUntil: "load" }).catch(error => console.error(`Page error: ${error}}`))
-
-        const requiredFields = elementsToMonitor.map(e => e.id);
+        await page.goto(`https://groww.in/stocks/${stock}`, { waitUntil: "load" })
+            .catch(error => console.error(`Page error: ${error}`));
 
         const stockData: Record<string, any> = {};
 
-        await page.exposeFunction("onValueChanged", (id: string, value: string) => {
+        const fetchAndOutputAll = async () => {
+            const allValues = await page.evaluate((elements) => {
+                return elements.map(({ id, selector }) => {
+                    const el = document.querySelector(selector);
+                    return { id, value: el ? el.textContent : null };
+                });
+            }, elementsToMonitor);
+
+            allValues.forEach(({ id, value }) => {
+                if (value !== null && value !== "0.00") {
+                    stockData[id] = value;
+                }
+            });
+            stockData["timestamp"] = formatDate(new Date());
+
+            const fieldsOrder = [
+                "Name",
+                "Price",
+                "currentPosition",
+                "lowestToday",
+                "highestToday",
+                "volume",
+                "timestamp"
+            ];
+            console.log(fieldsOrder.map(key => stockData[key] ?? "").join("|"));
+        };
+
+        await page.exposeFunction("onValueChanged", async (id: string, value: string) => {
             if (value == null || String(value) === "0.00") return;
-
-            stockData[id] = value;
-            stockData["timestamp"] = formatDate(new Date())
-
-            const hasAllFields = requiredFields.every(field => stockData[field] !== undefined);
-
-            if (hasAllFields) {
-                const fieldsOrder = [
-                    "Name",
-                    "Price",
-                    "currentPosition",
-                    "lowestToday",
-                    "highestToday",
-                    "volume",
-                    "timestamp"
-                ];
-                console.log(fieldsOrder.map(key => stockData[key] ?? "").join("|"));
-            }
+            await fetchAndOutputAll();
         });
 
         for (const { selector } of elementsToMonitor) {
             await page.waitForSelector(selector, { timeout: 800 }).catch(error => { });
         }
 
-        // Start monitoring the elements for changes
         await page.evaluate((elements) => {
             elements.forEach(({ id, selector }) => {
                 const el = document.querySelector(selector);
@@ -67,6 +73,8 @@ async function MonitorStock(stock: string) {
                 observer.observe(el, { childList: true, characterData: true, subtree: true });
             });
         }, elementsToMonitor);
+
+        await fetchAndOutputAll();
 
     } catch (error) {
         console.error(`Something went wrong - ${error}`);
