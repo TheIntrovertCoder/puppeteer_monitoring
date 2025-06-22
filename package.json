@@ -10,10 +10,10 @@
   "dependencies": {
     "@types/puppeteer": "^7.0.4",
     "exceljs": "^4.4.0",
-    "puppeteer": "^24.10.0"
+    "puppeteer": "^24.10.2"
   },
   "devDependencies": {
-    "typescript": "^5.5.3"
+    "typescript": "^5.8.3"
   },
   "private": true
 }

@@ -1,11 +1,11 @@
-import puppeteer from "puppeteer"
+import puppeteer, { Page } from "puppeteer"
 import { elementsToMonitor } from "./elementsToMonitor"
-import { formatDate, GetWebSocketDebugger } from "./helperFunction"
+import { Elements, formatDate, GetWebSocketDebugger } from "./helperFunction"
 import { Stocks } from "./stocksToMonitor"
 
 // Main entry point
 ;(async () => {
-    await Promise.all(Stocks.map((stock) => MonitorStock(stock)))
+    await Promise.allSettled(Stocks.map((stock) => MonitorStock(stock)))
 })()
 
 async function MonitorStock(stock: string) {
@@ -14,44 +14,36 @@ async function MonitorStock(stock: string) {
             browserWSEndpoint: await GetWebSocketDebugger(),
         })
 
-        const page = await browser.newPage()
+        const page: Page = await browser.newPage()
         await page
             .goto(`https://groww.in/stocks/${stock}`, { waitUntil: "load" })
-            .catch((error) => console.error(`Page error: ${error}`))
+            .catch((error: Error) => console.error(`Page error: ${error}`))
 
         const stockData: Record<string, any> = {}
         let lastOutput: string | null = null // Track last printed output
 
-        const fieldsOrder = [
-            "Name",
-            "Price",
-            "currentPosition",
-            "lowestToday",
-            "highestToday",
-            "volume",
-            "timestamp",
-        ]
+        const fieldsOrder = elementsToMonitor.map((element) => element.id)
+        fieldsOrder.push("timestamp")
 
         // Fetch all monitored values and print if changed
         const fetchAndOutputAll = async () => {
-            const allValues = await page.evaluate((elements) => {
+            const allValues = await page.evaluate((elements: Elements[]) => {
                 return elements.map(({ id, selector }) => {
                     const el = document.querySelector(selector)
-                    return { id, value: el ? el.textContent : null }
+                    console.info(`${id}} - ${el?.textContent}`)
+                    return { id, value: el ? el.textContent : id }
                 })
             }, elementsToMonitor)
 
             allValues.forEach(({ id, value }) => {
-                if (value !== null && value !== "0.00") {
-                    // Remove currency symbols and weird encodings
-                    value = value.replace(/₹|â‚¹/g, "").trim()
-                    stockData[id] = value
-                }
+                // Remove currency symbols and weird encodings
+                value = value && value.replace(/₹|â‚¹/g, "").trim()
+                stockData[id] = value
+                stockData["timestamp"] = formatDate(new Date())
             })
-            stockData["timestamp"] = formatDate(new Date())
 
             const outputLine = fieldsOrder
-                .map((key) => stockData[key] ?? "")
+                .map((key) => stockData[key] ?? key)
                 .join("|")
 
             // Only print if changed
@@ -65,7 +57,6 @@ async function MonitorStock(stock: string) {
         await page.exposeFunction(
             "onValueChanged",
             async (id: string, value: string) => {
-                if (value == null || String(value) === "0.00") return
                 await fetchAndOutputAll()
             }
         )
@@ -78,7 +69,7 @@ async function MonitorStock(stock: string) {
         }
 
         // Set up MutationObservers for all monitored elements
-        await page.evaluate((elements) => {
+        await page.evaluate((elements: Elements[]) => {
             elements.forEach(({ id, selector }) => {
                 const el = document.querySelector(selector)
                 // @ts-ignore
@@ -105,6 +96,10 @@ async function MonitorStock(stock: string) {
 
         // Initial fetch and print
         await fetchAndOutputAll()
+
+        process.on("SIGTERM", () => browser.close())
+
+        process.on("SIGINT", () => browser.close())
     } catch (error) {
         console.error(`Something went wrong - ${error}`)
     }

@@ -1,4 +1,6 @@
-export const elementsToMonitor = [
+import { Elements } from "./helperFunction"
+
+export const elementsToMonitor: Elements[] = [
     {
         id: "Name",
         selector:
@@ -12,17 +14,7 @@ export const elementsToMonitor = [
     {
         id: "Current_Status",
         selector:
-            "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > div.lpu38MainDiv > div.lpu38HeadWrap > div:nth-child(3) > div > div.bodyBaseHeavy.contentPositive",
-    },
-    {
-        id: "Current_Status",
-        selector:
-            "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > div.lpu38MainDiv > div.lpu38HeadWrap > div:nth-child(3) > div > div.bodyBaseHeavy.contentPrimary",
-    },
-    {
-        id: "Current_Status",
-        selector:
-            "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > div.lpu38MainDiv > div.lpu38HeadWrap > div:nth-child(3) > div > div.bodyBaseHeavy.contentNegative",
+            "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > div.lpu38MainDiv > div.lpu38HeadWrap > div:nth-child(3) > div > div.bodyBaseHeavy",
     },
     {
         id: "Lowest_Today",
