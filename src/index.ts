@@ -3,7 +3,9 @@ import { elementsToMonitor } from "./elementsToMonitor";
 import { formatDate, GetWebSocketDebugger } from "./helperFunction";
 import { Stocks } from "./stocksToMonitor";
 
-Stocks.forEach(stock => MonitorStock(stock));
+(async () => {
+    await Promise.all(Stocks.map(stock => MonitorStock(stock)))
+})()
 
 async function MonitorStock(stock: string) {
     try {
@@ -27,6 +29,8 @@ async function MonitorStock(stock: string) {
 
             allValues.forEach(({ id, value }) => {
                 if (value !== null && value !== "0.00") {
+                    value.replace("₹", "")
+                    value.replace("â‚¹", "")
                     stockData[id] = value;
                 }
             });
