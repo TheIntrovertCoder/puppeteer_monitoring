@@ -47,6 +47,7 @@ async function MonitorStock(stock: string) {
                             stockData["Volume Difference"] =
                                 old_volume - numericValue
                             old_volume = numericValue
+                            stockData[id] = value
                         }
                         stockData["Volume Difference"] = old_volume
                     } else {
