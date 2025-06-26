@@ -24,6 +24,7 @@ async function MonitorStock(stock: string) {
 
         const fieldsOrder = elementsToMonitor.map((element) => element.id)
         fieldsOrder.push("timestamp")
+        fieldsOrder.push("Volume Difference")
 
         // Fetch all monitored values and print if changed
         const fetchAndOutputAll = async () => {
@@ -35,15 +36,28 @@ async function MonitorStock(stock: string) {
                 })
             }, elementsToMonitor)
 
+            let old_volume = 0
             allValues.forEach(({ id, value }) => {
-                // Remove currency symbols and weird encodings
-                value = value && value.replace(/₹|â‚¹/g, "").trim()
-                stockData[id] = value
-                stockData["timestamp"] = formatDate(new Date())
+                if (value != null && value !== "" && value !== "0.00") {
+                    value = value.replace(/₹|â‚¹/g, "").trim()
+                    if (id === "Volume") {
+                        // Remove commas before converting to number
+                        const numericValue = Number(value.replace(/,/g, ""))
+                        if (numericValue !== old_volume) {
+                            stockData["Volume Difference"] =
+                                old_volume - numericValue
+                            old_volume = numericValue
+                        }
+                        stockData["Volume Difference"] = old_volume
+                    } else {
+                        stockData[id] = value
+                    }
+                    stockData["timestamp"] = formatDate(new Date())
+                }
             })
 
             const outputLine = fieldsOrder
-                .map((key) => stockData[key] ?? key)
+                .map((key) => stockData[key])
                 .join("|")
 
             // Only print if changed
