@@ -1,0 +1,70 @@
+[
+    {
+        "name": "stock",
+        "baseURL": "https://groww.in/stocks/",
+        "selectors": [
+            {
+                "name": "stock_name",
+                "selector": "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > div.lpu38MainDiv > div.lpu38HeadWrap > div:nth-child(2) > div:nth-child(1) > h1"
+            },
+            {
+                "name": "current_price",
+                "selector": "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > div.lpu38MainDiv > div.lpu38HeadWrap > div:nth-child(3) > div > div.lpu38Pri.valign-wrapper.false.displayBase > div"
+            },
+            {
+                "name": "one_day_returns",
+                "selector": "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > div.lpu38MainDiv > div.lpu38HeadWrap > div:nth-child(3) > div > div.bodyBaseHeavy"
+            },
+            {
+                "name": "today_low",
+                "selector": "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > section:nth-child(4) > div > div:nth-child(2) > div:nth-child(1) > div.pbar29SubDiv.left-align > div.pbar29Value.bodyLarge > div > span"
+            },
+            {
+                "name": "today_high",
+                "selector": "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > section:nth-child(4) > div > div:nth-child(2) > div:nth-child(1) > div.pbar29SubDiv.left-align > div.pbar29Value.bodyLarge > div > span"
+            },
+            {
+                "name": "previous_open",
+                "selector": "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > section:nth-child(4) > div > div.col.l12.contentPrimary > div.row > div:nth-child(1) > span"
+            },
+            {
+                "name": "previous_close",
+                "selector": "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > section:nth-child(4) > div > div.col.l12.contentPrimary > div.row > div:nth-child(2) > span"
+            },
+            {
+                "name": "volume",
+                "selector": "#root > div:nth-child(2) > div.container.web-align > div > div > div.pw14ContentWrapper.backgroundPrimary.layout-main.width100 > div > section:nth-child(4) > div > div.col.l12.contentPrimary > div.row > div:nth-child(3) > span"
+            }
+        ]
+    },
+    {
+        "name": "chart",
+        "baseURL": "https://groww.in/charts/stocks/",
+        "selectors": [
+            {
+                "name": "stock_name",
+                "selector": "body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center.no-border-bottom-left-radius.no-border-bottom-right-radius.no-border-top-right-radius > div.chart-container.top-full-width-chart.active > div.chart-container-border > div.chart-widget.chart-widget--themed-light.chart-widget__top--themed-light.chart-widget__bottom--themed-light > table > tr:nth-child(1) > td.chart-markup-table.pane > div > div.legend-G1_Pfvwd.noWrap-G1_Pfvwd.wrappable-G1_Pfvwd > div.legendMainSourceWrapper-G1_Pfvwd > div > div.noWrapWrapper-G1_Pfvwd > div.titleWrapper-G1_Pfvwd > div.title-G1_Pfvwd.mainTitle-G1_Pfvwd.apply-overflow-tooltip.withDot-G1_Pfvwd"
+            },
+            {
+                "name": "open",
+                "selector": "body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center.no-border-bottom-left-radius.no-border-bottom-right-radius.no-border-top-right-radius > div.chart-container.top-full-width-chart.active > div.chart-container-border > div.chart-widget.chart-widget--themed-light.chart-widget__top--themed-light.chart-widget__bottom--themed-light > table > tr:nth-child(1) > td.chart-markup-table.pane > div > div.legend-G1_Pfvwd.noWrap-G1_Pfvwd.wrappable-G1_Pfvwd > div.legendMainSourceWrapper-G1_Pfvwd > div > div.valuesWrapper-G1_Pfvwd > div > div:nth-child(2) > div.valueValue-G1_Pfvwd"
+            },
+            {
+                "name": "low",
+                "selector": "body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center.no-border-bottom-left-radius.no-border-bottom-right-radius.no-border-top-right-radius > div.chart-container.top-full-width-chart.active > div.chart-container-border > div.chart-widget.chart-widget--themed-light.chart-widget__top--themed-light.chart-widget__bottom--themed-light > table > tr:nth-child(1) > td.chart-markup-table.pane > div > div.legend-G1_Pfvwd.noWrap-G1_Pfvwd.wrappable-G1_Pfvwd > div.legendMainSourceWrapper-G1_Pfvwd > div > div.valuesWrapper-G1_Pfvwd > div > div:nth-child(4) > div.valueValue-G1_Pfvwd"
+            },
+            {
+                "name": "high",
+                "selector": "body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center.no-border-bottom-left-radius.no-border-bottom-right-radius.no-border-top-right-radius > div.chart-container.top-full-width-chart.active > div.chart-container-border > div.chart-widget.chart-widget--themed-light.chart-widget__top--themed-light.chart-widget__bottom--themed-light > table > tr:nth-child(1) > td.chart-markup-table.pane > div > div.legend-G1_Pfvwd.noWrap-G1_Pfvwd.wrappable-G1_Pfvwd > div.legendMainSourceWrapper-G1_Pfvwd > div > div.valuesWrapper-G1_Pfvwd > div > div:nth-child(3) > div.valueValue-G1_Pfvwd"
+            },
+            {
+                "name": "close",
+                "selector": "body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center.no-border-bottom-left-radius.no-border-bottom-right-radius.no-border-top-right-radius > div.chart-container.top-full-width-chart.active > div.chart-container-border > div.chart-widget.chart-widget--themed-light.chart-widget__top--themed-light.chart-widget__bottom--themed-light > table > tr:nth-child(1) > td.chart-markup-table.pane > div > div.legend-G1_Pfvwd.noWrap-G1_Pfvwd.wrappable-G1_Pfvwd > div.legendMainSourceWrapper-G1_Pfvwd > div > div.valuesWrapper-G1_Pfvwd > div > div:nth-child(5) > div.valueValue-G1_Pfvwd"
+            },
+            {
+                "name": "bar_change",
+                "selector": "body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center.no-border-bottom-left-radius.no-border-bottom-right-radius.no-border-top-right-radius > div.chart-container.top-full-width-chart.active > div.chart-container-border > div.chart-widget.chart-widget--themed-light.chart-widget__top--themed-light.chart-widget__bottom--themed-light > table > tr:nth-child(1) > td.chart-markup-table.pane > div > div.legend-G1_Pfvwd.noWrap-G1_Pfvwd.wrappable-G1_Pfvwd > div.legendMainSourceWrapper-G1_Pfvwd > div > div.valuesWrapper-G1_Pfvwd > div > div:nth-child(8) > div.valueValue-G1_Pfvwd"
+            }
+        ]
+    }
+]
